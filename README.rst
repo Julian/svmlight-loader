@@ -22,9 +22,11 @@ svmlight-loader
 
 ``svmlight-loader`` is a Cython-less (and ``scikit-learn``-less)
 implementation of the `svmlight / libsvm format
-<http://svmlight.joachims.org/>`_. It is designed simply to handle
-loading and dumping this format, which has become somewhat prevalent in
-exchanging arbitrary sparse machine learning datasets.
+<http://svmlight.joachims.org/>`_.
+
+It is designed simply to handle loading this format, which has become
+somewhat prevalent in exchanging arbitrary sparse machine learning
+datasets.
 
 It also is specifically intended to support PyPy (though of course it also
 supports CPython).
