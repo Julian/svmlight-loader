@@ -148,8 +148,11 @@ def test_empty_lines_at_end(from_lines):
         ).encode().splitlines(),
     )
     assert_array_equal(
-        # sklearn appears too to just drop empty rows at the end
-        X.toarray(), [[0.43, 0, 0.12, 0, 0, 0, 0, 0, 0.2]],
+        X.toarray(), [
+            [0.43, 0, 0.12, 0, 0, 0, 0, 0, 0.2],
+            [0] * 9,
+            [0] * 9,
+        ],
     )
 
 

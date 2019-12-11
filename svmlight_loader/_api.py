@@ -17,14 +17,12 @@ def classification_from_lines(lines, zero_based=False):
     """
     Load a series of lines from a classification dataset in svmlight format.
     """
-    data, row_ind, col_ind, y = _loads(
+    data, indices, indptr, y = _loads(
         lines,
         zero_based=zero_based,
         load_labels=int,
     )
-    X = csr_matrix(
-        (numpy.array(data), (numpy.array(row_ind), numpy.array(col_ind))),
-    )
+    X = csr_matrix((data, indices, indptr))
     return X, numpy.array(y)
 
 
@@ -32,14 +30,12 @@ def regression_from_lines(lines, zero_based=False):
     """
     Load a series of lines from a regression dataset in svmlight format.
     """
-    data, row_ind, col_ind, y = _loads(
+    data, indices, indptr, y = _loads(
         lines,
         zero_based=zero_based,
         load_labels=float,
     )
-    X = csr_matrix(
-        (numpy.array(data), (numpy.array(row_ind), numpy.array(col_ind))),
-    )
+    X = csr_matrix((data, indices, indptr))
     return X, numpy.array(y)
 
 
@@ -47,22 +43,20 @@ def multilabel_classification_from_lines(lines, zero_based=False):
     """
     Load a series of lines from a multilabel dataset in svmlight format.
     """
-    data, row_ind, col_ind, y = _loads(
+    data, indices, indptr, y = _loads(
         lines,
         zero_based=zero_based,
         load_labels=lambda labels: tuple(
             sorted(int(label) for label in labels.split(b",") if label)
         ),
     )
-    X = csr_matrix(
-        (numpy.array(data), (numpy.array(row_ind), numpy.array(col_ind))),
-    )
+    X = csr_matrix((data, indices, indptr))
     return X, y
 
 
 def _loads(lines, load_labels, zero_based):
-    data, row_ind, col_ind, y = [], [], [], []
-    for i, line in enumerate(_strip_comments(lines)):
+    data, indices, indptr, y = [], [], [0], []
+    for line in _strip_comments(lines):
         labels, _, rest = line.partition(b" ")
         y.append(load_labels(labels))
         features = rest.split()
@@ -78,14 +72,14 @@ def _loads(lines, load_labels, zero_based):
             if column < last_column:
                 raise InvalidSVMLight(
                     reason="features are not in increasing order",
-                    example=i + 1,
+                    example=len(data) - 1,
                 )
             last_column = column
 
-            row_ind.append(i)
-            col_ind.append(column)
+            indices.append(column)
             data.append(float(value))
-    return data, row_ind, col_ind, y
+        indptr.append(len(indices))
+    return data, indices, indptr, y
 
 
 def _strip_comments(lines):
