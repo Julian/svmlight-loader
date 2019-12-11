@@ -110,6 +110,55 @@ def test_invalid_order(from_lines):
         regression_from_lines,
     ],
 )
+def test_empty_line(from_lines):
+    X, y = from_lines(
+        dedent(
+            """\
+            1 1:0.43 3:0.12 9:0.2
+            0
+            0 3:0.12
+            """
+        ).encode().splitlines(),
+    )
+    assert_array_equal(
+        X.toarray(), [
+            [0.43, 0, 0.12, 0, 0, 0, 0, 0, 0.2],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0.12, 0, 0, 0, 0, 0, 0],
+        ],
+    )
+
+
+@pytest.mark.parametrize(
+    "from_lines", [
+        classification_from_lines,
+        multilabel_classification_from_lines,
+        regression_from_lines,
+    ],
+)
+def test_empty_lines_at_end(from_lines):
+    X, y = from_lines(
+        dedent(
+            """\
+            1 1:0.43 3:0.12 9:0.2
+            0
+            1
+            """
+        ).encode().splitlines(),
+    )
+    assert_array_equal(
+        # sklearn appears too to just drop empty rows at the end
+        X.toarray(), [[0.43, 0, 0.12, 0, 0, 0, 0, 0, 0.2]],
+    )
+
+
+@pytest.mark.parametrize(
+    "from_lines", [
+        classification_from_lines,
+        multilabel_classification_from_lines,
+        regression_from_lines,
+    ],
+)
 def test_query_ids_are_ignored_by_default(from_lines):
     X, _ = from_lines(
         dedent(

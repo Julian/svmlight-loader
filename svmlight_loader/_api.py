@@ -63,7 +63,7 @@ def multilabel_classification_from_lines(lines, zero_based=False):
 def _loads(lines, load_labels, zero_based):
     data, row_ind, col_ind, y = [], [], [], []
     for i, line in enumerate(_strip_comments(lines)):
-        labels, rest = line.split(b" ", 1)
+        labels, _, rest = line.partition(b" ")
         y.append(load_labels(labels))
         features = rest.split()
         last_column = -1
