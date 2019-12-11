@@ -118,3 +118,15 @@ def test_regression_invalid_order():
                 """
             ).encode().splitlines(),
         )
+
+
+def test_query_ids_are_ignored_by_default():
+    X, y = classification_from_lines(
+        dedent(
+            """\
+            1 qid:1 1:0.43 3:0.12 9:0.2
+            0 qid:2 2:0.12 8:0.2
+            1 qid:1 3:0.01 4:0.3
+            """
+        ).encode().splitlines(),
+    )

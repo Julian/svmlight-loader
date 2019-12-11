@@ -66,10 +66,11 @@ def _loads(lines, load_labels, zero_based):
         labels, rest = line.split(b" ", 1)
         y.append(load_labels(labels))
         features = rest.split()
-        row_ind.extend([i] * len(features))
         last_column = -1
-        for each in features:
+        for total_real_features, each in enumerate(features):
             column, value = each.split(b":")
+            if column == b"qid":
+                continue
             column = int(column)
             if not zero_based:
                 column -= 1
@@ -81,6 +82,7 @@ def _loads(lines, load_labels, zero_based):
                 )
             last_column = column
 
+            row_ind.append(i)
             col_ind.append(column)
             data.append(float(value))
     return data, row_ind, col_ind, y
