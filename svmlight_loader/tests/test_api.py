@@ -111,7 +111,7 @@ def test_invalid_order(from_lines):
     ],
 )
 def test_query_ids_are_ignored_by_default(from_lines):
-    X, y = from_lines(
+    X, _ = from_lines(
         dedent(
             """\
             1 qid:1 1:0.43 3:0.12 9:0.2
@@ -119,4 +119,11 @@ def test_query_ids_are_ignored_by_default(from_lines):
             1 qid:1 3:0.01 4:0.3
             """
         ).encode().splitlines(),
+    )
+    assert_array_equal(
+        X.toarray(), [
+            [0.43, 0, 0.12, 0, 0, 0, 0, 0, 0.2],
+            [0, 0.12, 0, 0, 0, 0, 0, 0.2, 0],
+            [0, 0, 0.01, 0.3, 0, 0, 0, 0, 0],
+        ],
     )
