@@ -1,7 +1,7 @@
 from textwrap import dedent
 
 from numpy.testing import assert_array_equal
-from pytest import raises
+import pytest
 
 from svmlight_loader import (
     InvalidSVMLight,
@@ -84,9 +84,16 @@ def test_regression():
     )
 
 
-def test_classification_invalid_order():
-    with raises(InvalidSVMLight):
-        classification_from_lines(
+@pytest.mark.parametrize(
+    "from_lines", [
+        classification_from_lines,
+        multilabel_classification_from_lines,
+        regression_from_lines,
+    ],
+)
+def test_invalid_order(from_lines):
+    with pytest.raises(InvalidSVMLight):
+        from_lines(
             dedent(  # second line has column indexes in the wrong order
                 """\
                 0 2:0.12 8:0.2
@@ -96,32 +103,15 @@ def test_classification_invalid_order():
         )
 
 
-def test_multilabel_classification_invalid_order():
-    with raises(InvalidSVMLight):
-        multilabel_classification_from_lines(
-            dedent(  # second line has column indexes in the wrong order
-                """\
-                2 2:0.12 8:0.2
-                1,2 9:0.43 3:0.12 2:0.2
-                """
-            ).encode().splitlines(),
-        )
-
-
-def test_regression_invalid_order():
-    with raises(InvalidSVMLight):
-        regression_from_lines(
-            dedent(  # second line has column indexes in the wrong order
-                """\
-                0.2 1:0.43 3:0.12 9:0.2
-                3000.7 8:0.12 2:0.2
-                """
-            ).encode().splitlines(),
-        )
-
-
-def test_query_ids_are_ignored_by_default():
-    X, y = classification_from_lines(
+@pytest.mark.parametrize(
+    "from_lines", [
+        classification_from_lines,
+        multilabel_classification_from_lines,
+        regression_from_lines,
+    ],
+)
+def test_query_ids_are_ignored_by_default(from_lines):
+    X, y = from_lines(
         dedent(
             """\
             1 qid:1 1:0.43 3:0.12 9:0.2
