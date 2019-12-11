@@ -33,14 +33,13 @@ def multilabel_classification_from_lines(lines, zero_based=False):
     """
     Load a series of lines from a multilabel dataset in svmlight format.
     """
-    X, y = _loads(
+    return _loads(
         lines,
         zero_based=zero_based,
         load_labels=lambda labels: tuple(
             sorted(int(label) for label in labels.split(b",") if label)
         ),
     )
-    return X, y
 
 
 def _loads(lines, load_labels, zero_based):
