@@ -17,12 +17,7 @@ def classification_from_lines(lines, zero_based=False):
     """
     Load a series of lines from a classification dataset in svmlight format.
     """
-    data, indices, indptr, y = _loads(
-        lines,
-        zero_based=zero_based,
-        load_labels=int,
-    )
-    X = csr_matrix((data, indices, indptr))
+    X, y = _loads(lines, zero_based=zero_based, load_labels=int)
     return X, numpy.array(y)
 
 
@@ -30,12 +25,7 @@ def regression_from_lines(lines, zero_based=False):
     """
     Load a series of lines from a regression dataset in svmlight format.
     """
-    data, indices, indptr, y = _loads(
-        lines,
-        zero_based=zero_based,
-        load_labels=float,
-    )
-    X = csr_matrix((data, indices, indptr))
+    X, y = _loads(lines, zero_based=zero_based, load_labels=float)
     return X, numpy.array(y)
 
 
@@ -43,14 +33,13 @@ def multilabel_classification_from_lines(lines, zero_based=False):
     """
     Load a series of lines from a multilabel dataset in svmlight format.
     """
-    data, indices, indptr, y = _loads(
+    X, y = _loads(
         lines,
         zero_based=zero_based,
         load_labels=lambda labels: tuple(
             sorted(int(label) for label in labels.split(b",") if label)
         ),
     )
-    X = csr_matrix((data, indices, indptr))
     return X, y
 
 
@@ -79,7 +68,7 @@ def _loads(lines, load_labels, zero_based):
             indices.append(column)
             data.append(float(value))
         indptr.append(len(indices))
-    return data, indices, indptr, y
+    return csr_matrix((data, indices, indptr)), y
 
 
 def _strip_comments(lines):
