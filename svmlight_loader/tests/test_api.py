@@ -92,7 +92,7 @@ def test_regression():
     ],
 )
 def test_invalid_order(from_lines):
-    with pytest.raises(InvalidSVMLight):
+    with pytest.raises(InvalidSVMLight) as e:
         from_lines(
             dedent(  # second line has column indexes in the wrong order
                 """\
@@ -101,6 +101,7 @@ def test_invalid_order(from_lines):
                 """
             ).encode().splitlines(),
         )
+    assert "example 2" in str(e.value)
 
 
 @pytest.mark.parametrize(

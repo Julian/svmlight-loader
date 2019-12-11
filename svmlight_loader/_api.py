@@ -10,7 +10,7 @@ class InvalidSVMLight(Exception):
     _reason = attr.ib()
 
     def __str__(self):
-        return "{.reason} (example {.example})".format(self)
+        return "{0._reason} (example {0._example})".format(self)
 
 
 def classification_from_lines(lines, zero_based=False):
