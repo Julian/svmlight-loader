@@ -1,8 +1,10 @@
 from textwrap import dedent
 
 from numpy.testing import assert_array_equal
+from pytest import raises
 
 from svmlight_loader import (
+    InvalidSVMLight,
     classification_from_lines,
     multilabel_classification_from_lines,
     regression_from_lines,
@@ -80,3 +82,39 @@ def test_regression():
             [0, 0, 0, 0, 0, 0.01, 0.3, 0, 0],
         ],
     )
+
+
+def test_classification_invalid_order():
+    with raises(InvalidSVMLight):
+        classification_from_lines(
+            dedent(  # second line has column indexes in the wrong order
+                """\
+                0 2:0.12 8:0.2
+                1 3:0.43 1:0.12 9:0.2
+                """
+            ).encode().splitlines(),
+        )
+
+
+def test_multilabel_classification_invalid_order():
+    with raises(InvalidSVMLight):
+        multilabel_classification_from_lines(
+            dedent(  # second line has column indexes in the wrong order
+                """\
+                2 2:0.12 8:0.2
+                1,2 9:0.43 3:0.12 2:0.2
+                """
+            ).encode().splitlines(),
+        )
+
+
+def test_regression_invalid_order():
+    with raises(InvalidSVMLight):
+        regression_from_lines(
+            dedent(  # second line has column indexes in the wrong order
+                """\
+                0.2 1:0.43 3:0.12 9:0.2
+                3000.7 8:0.12 2:0.2
+                """
+            ).encode().splitlines(),
+        )

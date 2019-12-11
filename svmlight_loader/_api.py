@@ -1,5 +1,16 @@
 from scipy.sparse import csr_matrix
+import attr
 import numpy
+
+
+@attr.s(hash=True)
+class InvalidSVMLight(Exception):
+
+    _example = attr.ib()
+    _reason = attr.ib()
+
+    def __str__(self):
+        return "{.reason} (example {.example})".format(self)
 
 
 def classification_from_lines(lines, zero_based=False):
@@ -56,11 +67,20 @@ def _loads(lines, load_labels, zero_based):
         y.append(load_labels(labels))
         features = rest.split()
         row_ind.extend([i] * len(features))
+        last_column = -1
         for each in features:
             column, value = each.split(b":")
             column = int(column)
             if not zero_based:
                 column -= 1
+
+            if column < last_column:
+                raise InvalidSVMLight(
+                    reason="features are not in increasing order",
+                    example=i + 1,
+                )
+            last_column = column
+
             col_ind.append(column)
             data.append(float(value))
     return data, row_ind, col_ind, y
