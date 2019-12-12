@@ -55,12 +55,20 @@ def _loads(lines, load_labels, zero_based):
                 continue
             column = int(column)
             if not zero_based:
+                if column == 0:
+                    raise InvalidSVMLight(
+                        reason=(
+                            "found a zero index but parsing "
+                            "was non-zero indexed"
+                        ),
+                        example=len(indptr),
+                    )
                 column -= 1
 
             if column < last_column:
                 raise InvalidSVMLight(
                     reason="features are not in increasing order",
-                    example=len(data) - 1,
+                    example=len(indptr),
                 )
             last_column = column
 

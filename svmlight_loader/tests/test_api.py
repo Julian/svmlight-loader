@@ -111,6 +111,19 @@ def test_invalid_order(from_lines):
         regression_from_lines,
     ],
 )
+def test_zero_index_in_nonzero_based_file(from_lines):
+    with pytest.raises(InvalidSVMLight) as e:
+        from_lines([b"-1 0:0.12 9:0.2"], zero_based=False)
+    assert "example 1" in str(e.value)
+
+
+@pytest.mark.parametrize(
+    "from_lines", [
+        classification_from_lines,
+        multilabel_classification_from_lines,
+        regression_from_lines,
+    ],
+)
 def test_empty_line(from_lines):
     X, y = from_lines(
         dedent(
