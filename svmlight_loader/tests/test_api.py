@@ -11,6 +11,15 @@ from svmlight_loader import (
 )
 
 
+all_loaders = pytest.mark.parametrize(
+    "from_lines", [
+        classification_from_lines,
+        multilabel_classification_from_lines,
+        regression_from_lines,
+    ],
+)
+
+
 def test_simple():
     X, y = classification_from_lines([b"-1 1:0.43 3:0.12 9:0.2"])
     assert_array_equal(y, [-1])
@@ -84,13 +93,7 @@ def test_regression():
     )
 
 
-@pytest.mark.parametrize(
-    "from_lines", [
-        classification_from_lines,
-        multilabel_classification_from_lines,
-        regression_from_lines,
-    ],
-)
+@all_loaders
 def test_invalid_order(from_lines):
     with pytest.raises(InvalidSVMLight) as e:
         from_lines(
@@ -104,26 +107,14 @@ def test_invalid_order(from_lines):
     assert "example 2" in str(e.value)
 
 
-@pytest.mark.parametrize(
-    "from_lines", [
-        classification_from_lines,
-        multilabel_classification_from_lines,
-        regression_from_lines,
-    ],
-)
+@all_loaders
 def test_zero_index_in_nonzero_based_file(from_lines):
     with pytest.raises(InvalidSVMLight) as e:
         from_lines([b"-1 0:0.12 9:0.2"], zero_based=False)
     assert "example 1" in str(e.value)
 
 
-@pytest.mark.parametrize(
-    "from_lines", [
-        classification_from_lines,
-        multilabel_classification_from_lines,
-        regression_from_lines,
-    ],
-)
+@all_loaders
 def test_empty_line(from_lines):
     X, y = from_lines(
         dedent(
@@ -143,13 +134,7 @@ def test_empty_line(from_lines):
     )
 
 
-@pytest.mark.parametrize(
-    "from_lines", [
-        classification_from_lines,
-        multilabel_classification_from_lines,
-        regression_from_lines,
-    ],
-)
+@all_loaders
 def test_empty_lines_at_end(from_lines):
     X, y = from_lines(
         dedent(
@@ -169,13 +154,7 @@ def test_empty_lines_at_end(from_lines):
     )
 
 
-@pytest.mark.parametrize(
-    "from_lines", [
-        classification_from_lines,
-        multilabel_classification_from_lines,
-        regression_from_lines,
-    ],
-)
+@all_loaders
 def test_all_empty_lines(from_lines):
     X, y = from_lines(
         dedent(
@@ -189,13 +168,7 @@ def test_all_empty_lines(from_lines):
     assert_array_equal(X.toarray(), [[], [], []])
 
 
-@pytest.mark.parametrize(
-    "from_lines", [
-        classification_from_lines,
-        multilabel_classification_from_lines,
-        regression_from_lines,
-    ],
-)
+@all_loaders
 def test_query_ids_are_ignored_by_default(from_lines):
     X, _ = from_lines(
         dedent(
@@ -215,13 +188,7 @@ def test_query_ids_are_ignored_by_default(from_lines):
     )
 
 
-@pytest.mark.parametrize(
-    "from_lines", [
-        classification_from_lines,
-        multilabel_classification_from_lines,
-        regression_from_lines,
-    ],
-)
+@all_loaders
 def test_query_ids_are_returned_if_requested(from_lines):
     X, _, query_id = from_lines(
         dedent(
