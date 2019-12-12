@@ -163,6 +163,26 @@ def test_empty_lines_at_end(from_lines):
         regression_from_lines,
     ],
 )
+def test_all_empty_lines(from_lines):
+    X, y = from_lines(
+        dedent(
+            """\
+            1
+            0
+            1
+            """
+        ).encode().splitlines(),
+    )
+    assert_array_equal(X.toarray(), [[], [], []])
+
+
+@pytest.mark.parametrize(
+    "from_lines", [
+        classification_from_lines,
+        multilabel_classification_from_lines,
+        regression_from_lines,
+    ],
+)
 def test_query_ids_are_ignored_by_default(from_lines):
     X, _ = from_lines(
         dedent(

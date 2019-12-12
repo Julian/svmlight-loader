@@ -67,7 +67,16 @@ def _loads(lines, load_labels, zero_based):
             indices.append(column)
             data.append(float(value))
         indptr.append(len(indices))
-    return csr_matrix((data, indices, indptr)), y
+
+    # For completely empty matrices, make them at least have right
+    # numbers of rows. scipy complains otherwise that it can't determine
+    # the dimensions. For all other cases, let it figure out the
+    # dimensions itself.
+    if not data:
+        shape = (len(indptr) - 1, 0)
+    else:
+        shape = None
+    return csr_matrix((data, indices, indptr), shape=shape), y
 
 
 def _strip_comments(lines):
