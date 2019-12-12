@@ -213,3 +213,31 @@ def test_query_ids_are_ignored_by_default(from_lines):
             [0, 0, 0.01, 0.3, 0, 0, 0, 0, 0],
         ],
     )
+
+
+@pytest.mark.parametrize(
+    "from_lines", [
+        classification_from_lines,
+        multilabel_classification_from_lines,
+        regression_from_lines,
+    ],
+)
+def test_query_ids_are_returned_if_requested(from_lines):
+    X, _, query_id = from_lines(
+        dedent(
+            """\
+            1 qid:1 1:0.43 3:0.12 9:0.2
+            0 qid:2 2:0.12 8:0.2
+            1 qid:1 3:0.01 4:0.3
+            """
+        ).encode().splitlines(),
+        query_id=True,
+    )
+    assert_array_equal(query_id, [1, 2, 1])
+    assert_array_equal(
+        X.toarray(), [
+            [0.43, 0, 0.12, 0, 0, 0, 0, 0, 0.2],
+            [0, 0.12, 0, 0, 0, 0, 0, 0.2, 0],
+            [0, 0, 0.01, 0.3, 0, 0, 0, 0, 0],
+        ],
+    )

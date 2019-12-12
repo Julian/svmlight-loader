@@ -13,37 +13,50 @@ class InvalidSVMLight(Exception):
         return "{0._reason} (example {0._example})".format(self)
 
 
-def classification_from_lines(lines, zero_based=False):
+def classification_from_lines(lines, zero_based=False, query_id=False):
     """
     Load a series of lines from a classification dataset in svmlight format.
     """
-    X, y = _loads(lines, zero_based=zero_based, load_labels=int)
-    return X, numpy.array(y)
+    X, y, qid = _loads(lines, zero_based=zero_based, load_labels=int)
+    y = numpy.array(y)
+    if query_id:
+        return X, y, numpy.array(qid)
+    return X, y
 
 
-def regression_from_lines(lines, zero_based=False):
+def regression_from_lines(lines, zero_based=False, query_id=False):
     """
     Load a series of lines from a regression dataset in svmlight format.
     """
-    X, y = _loads(lines, zero_based=zero_based, load_labels=float)
-    return X, numpy.array(y)
+    X, y, qid = _loads(lines, zero_based=zero_based, load_labels=float)
+    y = numpy.array(y)
+    if query_id:
+        return X, y, numpy.array(qid)
+    return X, y
 
 
-def multilabel_classification_from_lines(lines, zero_based=False):
+def multilabel_classification_from_lines(
+    lines,
+    zero_based=False,
+    query_id=False,
+):
     """
     Load a series of lines from a multilabel dataset in svmlight format.
     """
-    return _loads(
+    X, y, qid = _loads(
         lines,
         zero_based=zero_based,
         load_labels=lambda labels: tuple(
             sorted(int(label) for label in labels.split(b",") if label)
         ),
     )
+    if query_id:
+        return X, y, numpy.array(qid)
+    return X, y
 
 
 def _loads(lines, load_labels, zero_based):
-    data, indices, indptr, y = [], [], [0], []
+    data, indices, indptr, y, query_id = [], [], [0], [], []
     for line in _strip_comments(lines):
         labels, _, rest = line.partition(b" ")
         y.append(load_labels(labels))
@@ -52,6 +65,7 @@ def _loads(lines, load_labels, zero_based):
         for total_real_features, each in enumerate(features):
             column, value = each.split(b":")
             if column == b"qid":
+                query_id.append(int(value))
                 continue
             column = int(column)
             if not zero_based:
@@ -84,7 +98,7 @@ def _loads(lines, load_labels, zero_based):
         shape = (len(indptr) - 1, 0)
     else:
         shape = None
-    return csr_matrix((data, indices, indptr), shape=shape), y
+    return csr_matrix((data, indices, indptr), shape=shape), y, query_id
 
 
 def _strip_comments(lines):
