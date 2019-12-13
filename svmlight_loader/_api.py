@@ -59,8 +59,14 @@ def _loads(lines, load_labels, zero_based):
     data, indices, indptr, y, query_id = [], [], [0], [], []
     for line in _strip_comments(lines):
         labels, _, rest = line.partition(b" ")
-        y.append(load_labels(labels))
-        features = rest.split()
+
+        if b":" in labels:
+            y.append(load_labels(b""))
+            features = [labels] + rest.split()
+        else:
+            y.append(load_labels(labels))
+            features = rest.split()
+
         last_column = -1
         for total_real_features, each in enumerate(features):
             column, value = each.split(b":")
@@ -103,6 +109,6 @@ def _loads(lines, load_labels, zero_based):
 
 def _strip_comments(lines):
     for line in lines:
-        noncomment, _, _ = line.partition(b"#")
+        noncomment, _, _ = line.strip().partition(b"#")
         if noncomment:
             yield noncomment

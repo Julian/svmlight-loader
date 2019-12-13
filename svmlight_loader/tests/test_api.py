@@ -49,6 +49,24 @@ def test_multiple_rows():
     )
 
 
+def test_crazy_whitespace():
+    X, y = classification_from_lines(
+        (
+            b"  1 1:0.43 3:0.12 9:0.2      \n"
+            b"0 2:0.12 8:0.2   \n"
+            b"              1 3:0.01 4:0.3      "
+        ).splitlines(),
+    )
+    assert_array_equal(y, [1, 0, 1])
+    assert_array_equal(
+        X.toarray(), [
+            [0.43, 0, 0.12, 0, 0, 0, 0, 0, 0.2],
+            [0, 0.12, 0, 0, 0, 0, 0, 0.2, 0],
+            [0, 0, 0.01, 0.3, 0, 0, 0, 0, 0],
+        ],
+    )
+
+
 def test_multilabel():
     X, y = multilabel_classification_from_lines(
         dedent(
@@ -71,6 +89,24 @@ def test_multilabel():
     )
 
 
+def test_crazy_multilabel_whitespace():
+    X, y = multilabel_classification_from_lines(
+        (
+            b"  1,2 1:0.43 3:0.12 9:0.2      \n"
+            b"2 2:0.12 8:0.2   \n"
+            b"              2,3 3:0.01 4:0.3      "
+        ).splitlines(),
+    )
+    assert_array_equal(y, [(1, 2), (2,), (2, 3)])
+    assert_array_equal(
+        X.toarray(), [
+            [0.43, 0, 0.12, 0, 0, 0, 0, 0, 0.2],
+            [0, 0.12, 0, 0, 0, 0, 0, 0.2, 0],
+            [0, 0, 0.01, 0.3, 0, 0, 0, 0, 0],
+        ],
+    )
+
+
 def test_regression():
     X, y = regression_from_lines(
         dedent(
@@ -89,6 +125,24 @@ def test_regression():
             [0, 0.12, 0, 0, 0, 0, 0, 0.2, 0],
             [0, 0, 0.01, 0.3, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0.01, 0.3, 0, 0],
+        ],
+    )
+
+
+def test_crazy_regression_whitespace():
+    X, y = regression_from_lines(
+        (
+            b"  1.7 1:0.43 3:0.12 9:0.2      \n"
+            b"0.3 2:0.12 8:0.2   \n"
+            b"              1 3:0.01 4:0.3      "
+        ).splitlines(),
+    )
+    assert_array_equal(y, [1.7, 0.3, 1])
+    assert_array_equal(
+        X.toarray(), [
+            [0.43, 0, 0.12, 0, 0, 0, 0, 0, 0.2],
+            [0, 0.12, 0, 0, 0, 0, 0, 0.2, 0],
+            [0, 0, 0.01, 0.3, 0, 0, 0, 0, 0],
         ],
     )
 
