@@ -12,9 +12,9 @@ svmlight-loader
   :alt: Supported Python versions
   :target: https://pypi.org/project/svmlight-loader/
 
-.. |CI| image:: https://travis-ci.com/Julian/svmlight-loader.svg?branch=master
+.. |CI| image:: https://github.com/Julian/svmlight-loader/workflows/CI/badge.svg
   :alt: Build status
-  :target: https://travis-ci.com/Julian/svmlight-loader
+  :target: https://github.com/Julian/svmlight-loader/actions?query=workflow%3ACI
 
 .. |Codecov| image:: https://codecov.io/gh/Julian/svmlight-loader/branch/master/graph/badge.svg
   :alt: Codecov Code coverage
