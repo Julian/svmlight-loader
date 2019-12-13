@@ -44,10 +44,19 @@ def _load_svmlight_file(
     else:
         (X, y), qid = result, numpy.array([])
 
+    indices = X.indices.astype(numpy.longlong)
+    # Uh... so, sklearn passes zero_based=True to _load_svmlight_file,
+    # but then the actual wrapper function still subtracts 1 from all
+    # the indices...
+    #
+    # See https://github.com/scikit-learn/scikit-learn/blob/1c42e79d420cc03de5e0c3b625753c6084e25a3f/sklearn/datasets/_svmlight_format.py#L302-L303
+    if not zero_based:
+        indices += 1
+
     return (
         X.dtype,
         X.data,
-        X.indices.astype(numpy.longlong),
+        indices,
         X.indptr.astype(numpy.longlong),
         y,
         qid,
