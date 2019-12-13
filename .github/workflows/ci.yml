@@ -6,16 +6,81 @@ on:
     types: [published]
 
 jobs:
-  build:
+  ci:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest]
-        python-version: [pypy2, pypy3, 3.7, 3.8]
+        python-version:
+          - name: pypy2
+            toxenv:
+              TOXENV: pypy2
+          - name: pypy2
+            toxenv:
+              TOXENV: build
+          - name: pypy2
+            toxenv:
+              TOXENV: safety
+          - name: pypy2
+            toxenv:
+              TOXENV: style
+          - name: pypy3
+            toxenv:
+              TOXENV: pypy3
+          - name: pypy3
+            toxenv:
+              TOXENV: build
+          - name: pypy3
+            toxenv:
+              TOXENV: readme
+          - name: pypy3
+            toxenv:
+              TOXENV: secrets
+          - name: pypy3
+            toxenv:
+              TOXENV: safety
+          - name: pypy3
+            toxenv:
+              TOXENV: style
+          - name: 3.7
+            toxenv:
+              TOXENV: py37
+          - name: 3.7
+            toxenv:
+              TOXENV: docs-html
+          - name: 3.7
+            toxenv:
+              TOXENV: docs-doctest
+          - name: 3.7
+            toxenv:
+              TOXENV: docs-linkcheck
+          - name: 3.7
+            toxenv:
+              TOXENV: docs-spelling
+          - name: 3.7
+            toxenv:
+              TOXENV: docs-style
+          - name: 3.8
+            toxenv:
+              TOXENV: py38
 
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python ${{ matrix.python-version.name }}
       uses: actions/setup-python@v1
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: ${{ matrix.python-version.name }}
+    - name: Ensure we have new enough versions to respect python_version
+      run: python -m pip install -U pip setuptools
+    - name: Install numpy dependencies
+      run: sudo apt-get install -y gfortran libatlas-base-dev
+      if: startsWith(matrix.os, 'ubuntu')
+    - name: Install numpy dependencies
+      run: brew install gcc
+      if: startsWith(matrix.os, 'mac')
+    - name: Install tox
+      run: python -m pip install tox
+    - name: Run tox
+      run: python -m tox
+      env: ${{ matrix.python-version.toxenv }}
