@@ -53,14 +53,7 @@ def _load_svmlight_file(
     if not zero_based:
         indices += 1
 
-    return (
-        X.dtype,
-        X.data,
-        indices,
-        X.indptr.astype(numpy.longlong),
-        y,
-        qid,
-    )
+    return X.dtype, X.data, indices, X.indptr.astype(numpy.longlong), y, qid
 
 
 def _maybe_slice(file, offset, length):
