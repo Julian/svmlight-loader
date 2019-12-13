@@ -2,7 +2,7 @@
 svmlight-loader
 ===============
 
-|PyPI| |Pythons| |CI| |Codecov|
+|PyPI| |Pythons| |CI| |Codecov| |ReadTheDocs|
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/svmlight-loader.svg
   :alt: PyPI version
@@ -19,6 +19,10 @@ svmlight-loader
 .. |Codecov| image:: https://codecov.io/gh/Julian/svmlight-loader/branch/master/graph/badge.svg
   :alt: Codecov Code coverage
   :target: https://codecov.io/gh/Julian/svmlight-loader
+
+.. |ReadTheDocs| image:: https://readthedocs.org/projects/svmlight-loader/badge/?version=stable&style=flat
+  :alt: ReadTheDocs status
+  :target: https://svmlight-loader.readthedocs.io/en/stable/
 
 ``svmlight-loader`` is a Cython-less (and ``scikit-learn``-less)
 implementation of the `svmlight / libsvm format
