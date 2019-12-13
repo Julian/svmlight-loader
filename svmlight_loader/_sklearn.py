@@ -1,8 +1,6 @@
 """
 sklearn-specific API.
 """
-import os
-
 import numpy
 
 import svmlight_loader
