@@ -220,6 +220,12 @@ intersphinx_mapping = {
     "https://scikit-learn.org/stable/": None,
 }
 
+# -- Options for the linkcheck builder ------------------------------------
+
+linkcheck_ignore = [
+    "https://github.com/Julian/svmlight-loader/actions",
+]
+
 # -- Options for sphinxcontrib-spelling -----------------------------------
 
 spelling_word_list_filename = "spelling-wordlist.txt"
