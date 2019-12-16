@@ -6,6 +6,7 @@
 # full list see the documentation:
 # http://www.sphinx-doc.org/en/master/config
 from textwrap import dedent
+import re
 
 from svmlight_loader import __version__
 
@@ -222,7 +223,13 @@ intersphinx_mapping = {
 
 # -- Options for the linkcheck builder ------------------------------------
 
+
+def entire_domain(host):
+    return r"http.?://" + re.escape(host) + r"($|/.*)"
+
+
 linkcheck_ignore = [
+    entire_domain("codecov.io"),
     "https://github.com/Julian/svmlight-loader/actions",
 ]
 
