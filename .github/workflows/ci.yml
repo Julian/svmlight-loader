@@ -39,8 +39,10 @@ jobs:
             toxenv: style
           - name: 3.7
             toxenv: py37
+          - name: 3.8
+            toxenv: py38
           - name: 3.7
-            toxenv: docs-html
+            toxenv: docs-dirhtml
           - name: 3.7
             toxenv: docs-doctest
           - name: 3.7
@@ -49,8 +51,6 @@ jobs:
             toxenv: docs-spelling
           - name: 3.7
             toxenv: docs-style
-          - name: 3.8
-            toxenv: py38
 
     steps:
     - uses: actions/checkout@v2
