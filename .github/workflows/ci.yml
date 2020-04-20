@@ -63,9 +63,15 @@ jobs:
     - name: Install numpy dependencies
       run: sudo apt-get install -y gfortran libatlas-base-dev
       if: runner.os == 'Linux'
+    - name: Install docs dependencies
+      run: sudo apt-get install -y libenchant-dev
+      if: runner.os == 'Linux' && startsWith(matrix.python-version.toxenv, 'docs-')
     - name: Install numpy dependencies
       run: brew install gcc
       if: runner.os == 'macOS'
+    - name: Install docs dependencies
+      run: brew install enchant
+      if: runner.os == 'macOS' && startsWith(matrix.python-version.toxenv, 'docs-')
     - name: Install tox
       run: python -m pip install tox
     - name: Run tox
