@@ -47,7 +47,7 @@ def _load_svmlight_file(
     # but then the actual wrapper function still subtracts 1 from all
     # the indices...
     #
-    # See https://github.com/scikit-learn/scikit-learn/blob/1c42e79d420cc03de5e0c3b625753c6084e25a3f/sklearn/datasets/_svmlight_format.py#L302-L303
+    # See https://github.com/scikit-learn/scikit-learn/blob/1c42e79d420cc03de5e0c3b625753c6084e25a3f/sklearn/datasets/_svmlight_format.py#L302-L303  # noqa: E501
     if not zero_based:
         indices += 1
 
@@ -56,7 +56,7 @@ def _load_svmlight_file(
 
 def _maybe_slice(file, offset, length):
     if offset:
-        # From https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_svmlight_files.html#sklearn.datasets.load_svmlight_files:
+        # From https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_svmlight_files.html#sklearn.datasets.load_svmlight_files:  # noqa: E501
         #     "Ignore the offset first bytes by seeking forward, then
         #      discarding the following bytes up until the next new line
         #      character."
